@@ -86,11 +86,24 @@ bool UniversalZaloBot::sendPhoto(const String &chat_id, const String &photo_url,
   return _checkZaloRequestSuccess(res.body);
 }
 
-bool UniversalZaloBot::sendSticker(const String &chat_id, const String &sticker_uuid) {
+bool UniversalZaloBot::sendSticker(const String &chat_id, const String &sticker_id) {
   String apiSlug = getApiBaseSlug() + "sendSticker";
   StaticJsonDocument<1024> doc;
   doc["chat_id"] = chat_id;
-  doc["sticker"] = sticker_uuid;
+  doc["sticker"] = sticker_id;
+
+  String payload;
+  serializeJson(doc, payload);
+
+  HttpResponse res = _post(getApiHost(), apiSlug, 443, payload);
+  return _checkZaloRequestSuccess(res.body);
+}
+
+bool UniversalZaloBot::sendChatAction(const String &chat_id, const String &action) {
+  String apiSlug = getApiBaseSlug() + "sendChatAction";
+  StaticJsonDocument<1024> doc;
+  doc["chat_id"] = chat_id;
+  doc["action"] = action;
 
   String payload;
   serializeJson(doc, payload);

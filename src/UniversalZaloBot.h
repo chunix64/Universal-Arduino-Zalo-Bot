@@ -36,7 +36,8 @@ public:
   String getBotName();
   bool sendMessage(const String &chat_id, const String &message);
   bool sendPhoto(const String &chat_id, const String &photo_url, const String &caption = "");
-  bool sendSticker(const String &chat_id, const String& sticker_uuid);
+  bool sendSticker(const String &chat_id, const String &sticker_id);
+  bool sendChatAction(const String &chat_id, const String &action);
 
 private:
   Client *client;
