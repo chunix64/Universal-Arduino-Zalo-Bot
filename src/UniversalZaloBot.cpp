@@ -9,51 +9,34 @@ UniversalZaloBot::UniversalZaloBot(const String &token, Client &client) {
   this->client = &client;
 }
 
-void UniversalZaloBot::setApiHost(const String &host) {
-  _apiHost = host;
-}
+void UniversalZaloBot::setApiHost(const String &host) { _apiHost = host; }
 
-String UniversalZaloBot::getApiHost() {
-  return _apiHost;
-}
+String UniversalZaloBot::getApiHost() { return _apiHost; }
 
-void UniversalZaloBot::setToken(const String &token) {
-  _token = token;
-}
+void UniversalZaloBot::setToken(const String &token) { _token = token; }
 
-String UniversalZaloBot::getToken() {
-  return _token;
-}
+String UniversalZaloBot::getToken() { return _token; }
 
-void UniversalZaloBot::setLongPoll(int longPoll) {
-  _longPoll = longPoll;
-}
+void UniversalZaloBot::setLongPoll(int longPoll) { _longPoll = longPoll; }
 
-int UniversalZaloBot::getLongPoll() {
-  return _longPoll;
-}
+int UniversalZaloBot::getLongPoll() { return _longPoll; }
 
 void UniversalZaloBot::setHttpTimeout(int httpTimeout) {
   _httpTimeout = httpTimeout;
 }
 
-int UniversalZaloBot::getHttpTimeout() {
-  return _httpTimeout;
-};
+int UniversalZaloBot::getHttpTimeout() { return _httpTimeout; };
 
 void UniversalZaloBot::setMaxMessageLength(int maxMessageLength) {
   _maxMessageLength = maxMessageLength;
 }
 
-int UniversalZaloBot::getMaxMessageLength() {
-  return _maxMessageLength;
-}
+int UniversalZaloBot::getMaxMessageLength() { return _maxMessageLength; }
 
-String UniversalZaloBot::getApiBaseSlug() {
-  return "/bot" + getToken() + "/";
-}
+String UniversalZaloBot::getApiBaseSlug() { return "/bot" + getToken() + "/"; }
 
-bool UniversalZaloBot::sendMessage(const String &chat_id, const String &message) {
+bool UniversalZaloBot::sendMessage(const String &chat_id,
+                                   const String &message) {
   String apiSlug = getApiBaseSlug() + "sendMessage";
   StaticJsonDocument<256> doc;
   doc["chat_id"] = chat_id;
@@ -67,22 +50,31 @@ bool UniversalZaloBot::sendMessage(const String &chat_id, const String &message)
 }
 
 // Private
-HttpResponse UniversalZaloBot::_get(const String &host, const String &slug, int port) {
-  HttpResponse httpResponse;
+bool UniversalZaloBot::_ensureConnected(const String &host, int port) {
   if (!client->connected() || _currentHost != host) {
 #ifdef ZALO_DEBUG
-    Serial.println(F("[ZALO] Connecting to server"));
+    Serial.print(F("[ZALO] Connecting to "));
+    Serial.println(host);
 #endif // ZALO_DEBUG
 
     if (!client->connect(host.c_str(), port)) {
 #ifdef ZALO_DEBUG
       Serial.println(F("[ZALO] Connection error"));
 #endif // ZALO_DEBUG
-      return httpResponse;
+      return false;
     }
 
     _currentHost = host;
   }
+
+  return true;
+}
+
+HttpResponse UniversalZaloBot::_get(const String &host, const String &slug,
+                                    int port) {
+  HttpResponse httpResponse;
+  if (!_ensureConnected(host, port))
+    return httpResponse;
 
   if (client->connected()) {
 #ifdef ZALO_DEBUG
@@ -101,28 +93,17 @@ HttpResponse UniversalZaloBot::_get(const String &host, const String &slug, int 
 #ifdef ZALO_DEBUG
     Serial.print(F("[ZALO] GET: "));
     Serial.println(slug.length() ? slug : "/");
-#endif // ZALO_DEBUG    
+#endif // ZALO_DEBUG
   }
 
   return _parseHttpResponse();
 }
 
-HttpResponse UniversalZaloBot::_post(const String &host, const String& slug, int port, const String &payload) {
+HttpResponse UniversalZaloBot::_post(const String &host, const String &slug,
+                                     int port, const String &payload) {
   HttpResponse httpResponse;
-  if (!client->connected() || _currentHost != host) {
-#ifdef ZALO_DEBUG
-    Serial.println(F("[ZALO] Connecting to server"));
-#endif // ZALO_DEBUG
-
-    if (!client->connect(host.c_str(), port)) {
-#ifdef ZALO_DEBUG
-      Serial.println(F("[ZALO] Connection error"));
-#endif // ZALO_DEBUG
-      return httpResponse;
-    }
-
-    _currentHost = host;
-  }
+  if (!_ensureConnected(host, port))
+    return httpResponse;
 
   if (client->connected()) {
 #ifdef ZALO_DEBUG
@@ -143,7 +124,7 @@ HttpResponse UniversalZaloBot::_post(const String &host, const String& slug, int
 
 #ifdef ZALO_DEBUG
     Serial.print(F("[ZALO] POST: "));
-    Serial.println(payloadJson);
+    Serial.println(payload);
 #endif // ZALO_DEBUG
   }
 
@@ -177,8 +158,10 @@ HttpResponse UniversalZaloBot::_parseHttpResponse() {
         }
       }
 
-      if (currentCharacter == '\n') currentLineIsBlank = true;
-      else if (currentCharacter != '\r') currentLineIsBlank = false;
+      if (currentCharacter == '\n')
+        currentLineIsBlank = true;
+      else if (currentCharacter != '\r')
+        currentLineIsBlank = false;
     }
   }
 

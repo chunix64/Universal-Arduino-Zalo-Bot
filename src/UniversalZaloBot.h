@@ -6,6 +6,7 @@
 
 #ifndef UNIVERSAL_ZALO_BOT_H
 #define UNIVERSAL_ZALO_BOT_H
+#define ZALO_DEBUG
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
@@ -17,7 +18,7 @@ struct HttpResponse {
 };
 
 class UniversalZaloBot {
- public:
+public:
   UniversalZaloBot(const String &token, Client &client);
   void setApiHost(const String &host);
   String getApiHost();
@@ -32,7 +33,7 @@ class UniversalZaloBot {
   String getApiBaseSlug();
   bool sendMessage(const String &chat_id, const String &message);
 
- private:
+private:
   Client *client;
   String _apiHost;
   String _token;
@@ -40,8 +41,11 @@ class UniversalZaloBot {
   int _longPoll;
   int _httpTimeout;
   int _maxMessageLength;
-  HttpResponse _get(const String &host, const String &slug = "/", int port = 443);
-  HttpResponse _post(const String &host, const String& slug = "/", int port = 443, const String &payload = "");
+  bool _ensureConnected(const String &host, int port);
+  HttpResponse _get(const String &host, const String &slug = "/",
+                    int port = 443);
+  HttpResponse _post(const String &host, const String &slug = "/",
+                     int port = 443, const String &payload = "");
   HttpResponse _parseHttpResponse();
 };
 

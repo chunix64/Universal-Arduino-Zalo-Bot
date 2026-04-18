@@ -84,8 +84,7 @@ message.chat.id
 
 That value is your `CHAT_ID`.
 
-> This current method is temporary
-> A simpler built-in method is planned
+> This current method is temporary. A simpler method is planned.
 ---
 
 ## Notes
