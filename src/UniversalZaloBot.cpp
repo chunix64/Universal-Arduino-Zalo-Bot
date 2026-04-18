@@ -41,10 +41,7 @@ bool UniversalZaloBot::isTokenValid() {
   String apiSlug = getApiBaseSlug() + "getMe";
   HttpResponse res = _post(getApiHost(), apiSlug);
 
-  StaticJsonDocument<256> doc;
-  DeserializationError error = deserializeJson(doc, res.body);
-
-  return !error && doc["error_code"] == 0;
+  return _checkZaloRequestSuccess(res.body);
 }
 
 String UniversalZaloBot::getBotName() {
@@ -72,7 +69,21 @@ bool UniversalZaloBot::sendMessage(const String &chat_id,
   serializeJson(doc, payload);
 
   HttpResponse res = _post(getApiHost(), apiSlug, 443, payload);
-  return res.body.length() > 0;
+  return _checkZaloRequestSuccess(res.body);
+}
+
+bool UniversalZaloBot::sendPhoto(const String &chat_id, const String &photo_url, const String &caption) {
+  String apiSlug = getApiBaseSlug() + "sendPhoto";
+  StaticJsonDocument<1024> doc;
+  doc["chat_id"] = chat_id;
+  doc["caption"] = caption;
+  doc["photo"] = photo_url;
+
+  String payload;
+  serializeJson(doc, payload);
+
+  HttpResponse res = _post(getApiHost(), apiSlug, 443, payload);
+  return _checkZaloRequestSuccess(res.body);
 }
 
 //---------------------------------------------------------
@@ -197,4 +208,11 @@ HttpResponse UniversalZaloBot::_parseHttpResponse() {
   }
 
   return httpResponse;
+}
+
+bool UniversalZaloBot::_checkZaloRequestSuccess(const String &payload) {
+  StaticJsonDocument<256> doc;
+  DeserializationError error = deserializeJson(doc, payload);
+
+  return !error && doc["error_code"] == 0;
 }

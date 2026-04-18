@@ -35,6 +35,7 @@ public:
   bool isTokenValid();
   String getBotName();
   bool sendMessage(const String &chat_id, const String &message);
+  bool sendPhoto(const String &chat_id, const String &photo_url, const String &caption = "");
 
 private:
   Client *client;
@@ -50,6 +51,7 @@ private:
   HttpResponse _post(const String &host, const String &slug = "/",
                      int port = 443, const String &payload = "");
   HttpResponse _parseHttpResponse();
+  bool _checkZaloRequestSuccess(const String &payload);
 };
 
 #endif
