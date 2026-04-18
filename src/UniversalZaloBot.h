@@ -4,19 +4,45 @@
   Licensed under the GNU GPL v3.
  */
 
-#ifndef UniversalZaloBot_h
-#define UniversalZaloBot_h
+#ifndef UNIVERSAL_ZALO_BOT_H
+#define UNIVERSAL_ZALO_BOT_H
 
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include <Client.h>
 
+struct HttpResponse {
+  String header;
+  String body;
+};
+
 class UniversalZaloBot {
-  public:
-    UniversalZaloBot(const String& token, Client& client);
-    sendMessage();
-  private:
-    String _token;
-    Client client;
-}
+ public:
+  UniversalZaloBot(const String &token, Client &client);
+  void setApiHost(const String &host);
+  String getApiHost();
+  void setToken(const String &token);
+  String getToken();
+  void setLongPoll(int longPoll);
+  int getLongPoll();
+  void setHttpTimeout(int httpTimeout);
+  int getHttpTimeout();
+  void setMaxMessageLength(int maxMessageLength);
+  int getMaxMessageLength();
+  String getApiBaseSlug();
+  bool sendMessage(const String &chat_id, const String &message);
+
+ private:
+  Client *client;
+  String _apiHost;
+  String _token;
+  String _currentHost;
+  int _longPoll;
+  int _httpTimeout;
+  int _maxMessageLength;
+  HttpResponse _get(const String &host, const String &slug = "/", int port = 443);
+  HttpResponse _post(const String &host, const String& slug = "/", int port = 443, const String &payload = "");
+  HttpResponse _parseHttpResponse();
+};
 
 #endif
