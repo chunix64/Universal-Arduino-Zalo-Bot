@@ -24,13 +24,16 @@ public:
   String getApiHost();
   void setToken(const String &token);
   String getToken();
-  void setLongPoll(int longPoll);
-  int getLongPoll();
+  void setLongPollTimeout(int longPollTimeout);
+  int getLongPollTimeout();
   void setHttpTimeout(int httpTimeout);
   int getHttpTimeout();
   void setMaxMessageLength(int maxMessageLength);
   int getMaxMessageLength();
   String getApiBaseSlug();
+
+  bool isTokenValid();
+  String getBotName();
   bool sendMessage(const String &chat_id, const String &message);
 
 private:
@@ -38,7 +41,7 @@ private:
   String _apiHost;
   String _token;
   String _currentHost;
-  int _longPoll;
+  int _longPollTimeout;
   int _httpTimeout;
   int _maxMessageLength;
   bool _ensureConnected(const String &host, int port);

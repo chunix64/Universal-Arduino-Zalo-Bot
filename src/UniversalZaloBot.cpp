@@ -3,7 +3,7 @@
 UniversalZaloBot::UniversalZaloBot(const String &token, Client &client) {
   setToken(token);
   setApiHost("bot-api.zaloplatforms.com");
-  setLongPoll(0);
+  setLongPollTimeout(0);
   setHttpTimeout(1500);
   setMaxMessageLength(1500);
   this->client = &client;
@@ -17,9 +17,11 @@ void UniversalZaloBot::setToken(const String &token) { _token = token; }
 
 String UniversalZaloBot::getToken() { return _token; }
 
-void UniversalZaloBot::setLongPoll(int longPoll) { _longPoll = longPoll; }
+void UniversalZaloBot::setLongPollTimeout(int longPollTimeout) {
+  _longPollTimeout = longPollTimeout;
+}
 
-int UniversalZaloBot::getLongPoll() { return _longPoll; }
+int UniversalZaloBot::getLongPollTimeout() { return _longPollTimeout; }
 
 void UniversalZaloBot::setHttpTimeout(int httpTimeout) {
   _httpTimeout = httpTimeout;
@@ -35,10 +37,34 @@ int UniversalZaloBot::getMaxMessageLength() { return _maxMessageLength; }
 
 String UniversalZaloBot::getApiBaseSlug() { return "/bot" + getToken() + "/"; }
 
+bool UniversalZaloBot::isTokenValid() {
+  String apiSlug = getApiBaseSlug() + "getMe";
+  HttpResponse res = _post(getApiHost(), apiSlug);
+
+  StaticJsonDocument<256> doc;
+  DeserializationError error = deserializeJson(doc, res.body);
+
+  return !error && doc["error_code"] == 0;
+}
+
+String UniversalZaloBot::getBotName() {
+  String apiSlug = getApiBaseSlug() + "getMe";
+  HttpResponse res = _post(getApiHost(), apiSlug);
+
+  StaticJsonDocument<256> doc;
+  DeserializationError error = deserializeJson(doc, res.body);
+
+  if (!error && doc["error_code"] == 0) {
+    return doc["result"]["display_name"];
+  }
+
+  return "Unknown";
+}
+
 bool UniversalZaloBot::sendMessage(const String &chat_id,
                                    const String &message) {
   String apiSlug = getApiBaseSlug() + "sendMessage";
-  StaticJsonDocument<256> doc;
+  StaticJsonDocument<1024> doc;
   doc["chat_id"] = chat_id;
   doc["text"] = message;
 
@@ -49,7 +75,12 @@ bool UniversalZaloBot::sendMessage(const String &chat_id,
   return res.body.length() > 0;
 }
 
+//---------------------------------------------------------
+//
 // Private
+//
+//---------------------------------------------------------
+
 bool UniversalZaloBot::_ensureConnected(const String &host, int port) {
   if (!client->connected() || _currentHost != host) {
 #ifdef ZALO_DEBUG
@@ -140,7 +171,7 @@ HttpResponse UniversalZaloBot::_parseHttpResponse() {
   bool currentLineIsBlank = true;
   bool responseReceived = false;
 
-  while (millis() - now < getLongPoll() + getHttpTimeout()) {
+  while (millis() - now < getLongPollTimeout() + getHttpTimeout()) {
     while (client->available()) {
       char currentCharacter = client->read();
       responseReceived = true;

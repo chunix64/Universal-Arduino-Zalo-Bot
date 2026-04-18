@@ -68,7 +68,7 @@ void loop() {
 
 ## Getting Your Chat ID
 
-1. Open a POST request to (long polling):
+1. Open the following URL in your browser:
 
 ```
 https://bot-api.zaloplatforms.com/bot<YOUR_BOT_TOKEN>/getUpdates
