@@ -86,6 +86,19 @@ bool UniversalZaloBot::sendPhoto(const String &chat_id, const String &photo_url,
   return _checkZaloRequestSuccess(res.body);
 }
 
+bool UniversalZaloBot::sendSticker(const String &chat_id, const String &sticker_uuid) {
+  String apiSlug = getApiBaseSlug() + "sendSticker";
+  StaticJsonDocument<1024> doc;
+  doc["chat_id"] = chat_id;
+  doc["sticker"] = sticker_uuid;
+
+  String payload;
+  serializeJson(doc, payload);
+
+  HttpResponse res = _post(getApiHost(), apiSlug, 443, payload);
+  return _checkZaloRequestSuccess(res.body);
+}
+
 //---------------------------------------------------------
 //
 // Private
