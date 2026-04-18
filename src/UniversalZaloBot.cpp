@@ -199,7 +199,7 @@ HttpResponse UniversalZaloBot::_post(const String &host, const String &slug,
   return _parseHttpResponse();
 }
 
-HttpResponse UniversalZaloBot::_parseHttpResponse() {
+HttpResponse UniversalZaloBot::_parseHttpResponse(bool isPolling) {
   HttpResponse httpResponse;
 
   int character_count = 0;
@@ -207,8 +207,13 @@ HttpResponse UniversalZaloBot::_parseHttpResponse() {
   bool finishedHeaders = false;
   bool currentLineIsBlank = true;
   bool responseReceived = false;
+  int currentHttpTimeout = getHttpTimeout();
 
-  while (millis() - now < getLongPollTimeout() + getHttpTimeout()) {
+  if (isPolling) {
+    currentHttpTimeout += getLongPollTimeout();
+  }
+
+  while (millis() - now < currentHttpTimeout) {
     while (client->available()) {
       char currentCharacter = client->read();
       responseReceived = true;

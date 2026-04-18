@@ -52,7 +52,7 @@ private:
                     int port = 443);
   HttpResponse _post(const String &host, const String &slug = "/",
                      int port = 443, const String &payload = "");
-  HttpResponse _parseHttpResponse();
+  HttpResponse _parseHttpResponse(bool isPolling = false);
   bool _checkZaloRequestSuccess(const String &payload);
 };
 
