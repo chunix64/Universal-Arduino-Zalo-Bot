@@ -23,6 +23,14 @@ struct HttpResponse {
   String body;
 };
 
+struct Message {
+  unsigned long date;
+  String chat_id;
+  String user_id;
+  String user_name;
+  String content;
+};
+
 class UniversalZaloBot {
 public:
   UniversalZaloBot(const String &token, Client &client,
@@ -47,6 +55,7 @@ public:
                  const String &caption = "");
   bool sendSticker(const String &chat_id, const String &sticker_id);
   bool sendChatAction(const String &chat_id, const String &action);
+  Message getUpdates();
 
 private:
   Client *client;
@@ -63,11 +72,12 @@ private:
   bool _ensureConnection(const String &host, int port);
   void _cleanupConnection();
   HttpResponse _get(const String &host, const String &slug = "/",
-                    int port = 443);
+                    int port = 443, bool isPolling = false);
   HttpResponse _post(const String &host, const String &slug = "/",
-                     int port = 443, const String &payload = "");
+                     int port = 443, const String &payload = "",
+                     bool isPolling = false);
   HttpResponse _parseHttpResponse(bool isPolling = false);
-  bool _checkZaloRequestSuccess(const String &payload);
+  bool _checkForOkResponse(const String &payload);
 };
 
 #ifdef HAS_FREERTOS

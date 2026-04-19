@@ -4,7 +4,7 @@ UniversalZaloBot::UniversalZaloBot(const String &token, Client &client,
                                    bool isFreeRTOS) {
   setToken(token);
   setApiHost("bot-api.zaloplatforms.com");
-  setLongPollTimeout(0);
+  setLongPollTimeout(30);
   setHttpTimeout(1500);
   setMaxMessageLength(1500);
   _isFreeRTOS = isFreeRTOS;
@@ -62,7 +62,7 @@ bool UniversalZaloBot::isTokenValid() {
   String apiSlug = getApiBaseSlug() + "getMe";
   HttpResponse res = _post(getApiHost(), apiSlug);
 
-  return _checkZaloRequestSuccess(res.body);
+  return _checkForOkResponse(res.body);
 }
 
 String UniversalZaloBot::getBotName() {
@@ -72,7 +72,7 @@ String UniversalZaloBot::getBotName() {
   StaticJsonDocument<256> doc;
   DeserializationError error = deserializeJson(doc, res.body);
 
-  if (!error && doc["error_code"] == 0) {
+  if (!error && doc["ok"]) {
     return doc["result"]["display_name"];
   }
 
@@ -90,7 +90,7 @@ bool UniversalZaloBot::sendMessage(const String &chat_id,
   serializeJson(doc, payload);
 
   HttpResponse res = _post(getApiHost(), apiSlug, 443, payload);
-  return _checkZaloRequestSuccess(res.body);
+  return _checkForOkResponse(res.body);
 }
 
 bool UniversalZaloBot::sendPhoto(const String &chat_id, const String &photo_url,
@@ -105,7 +105,7 @@ bool UniversalZaloBot::sendPhoto(const String &chat_id, const String &photo_url,
   serializeJson(doc, payload);
 
   HttpResponse res = _post(getApiHost(), apiSlug, 443, payload);
-  return _checkZaloRequestSuccess(res.body);
+  return _checkForOkResponse(res.body);
 }
 
 bool UniversalZaloBot::sendSticker(const String &chat_id,
@@ -119,7 +119,7 @@ bool UniversalZaloBot::sendSticker(const String &chat_id,
   serializeJson(doc, payload);
 
   HttpResponse res = _post(getApiHost(), apiSlug, 443, payload);
-  return _checkZaloRequestSuccess(res.body);
+  return _checkForOkResponse(res.body);
 }
 
 bool UniversalZaloBot::sendChatAction(const String &chat_id,
@@ -133,7 +133,46 @@ bool UniversalZaloBot::sendChatAction(const String &chat_id,
   serializeJson(doc, payload);
 
   HttpResponse res = _post(getApiHost(), apiSlug, 443, payload);
-  return _checkZaloRequestSuccess(res.body);
+  return _checkForOkResponse(res.body);
+}
+
+Message UniversalZaloBot::getUpdates() {
+  Message message;
+  String apiSlug = getApiBaseSlug() + "getUpdates";
+  StaticJsonDocument<256> reqDoc;
+  reqDoc["timeout"] = getLongPollTimeout();
+
+  String payload;
+  serializeJson(reqDoc, payload);
+
+  HttpResponse res = _post(getApiHost(), apiSlug, 443, payload, true);
+
+  StaticJsonDocument<2048> resDoc;
+  DeserializationError error = deserializeJson(resDoc, res.body);
+
+  if (error || !resDoc["ok"]) {
+    return message;
+  }
+
+  JsonObject result = resDoc["result"];
+
+  if (result.isNull()) {
+    return message;
+  }
+
+  JsonObject resMessage = result["message"];
+
+  if (resMessage.isNull()) {
+    return message;
+  }
+
+  message.date = resMessage["date"] | 0UL;
+  message.chat_id = resMessage["chat"]["id"] | "";
+  message.user_id = resMessage["from"]["id"] | "";
+  message.user_name = resMessage["from"]["display_name"] | "";
+  message.content = resMessage["text"] | "";
+
+  return message;
 }
 
 //---------------------------------------------------------
@@ -187,7 +226,7 @@ void UniversalZaloBot::_cleanupConnection() {
 }
 
 HttpResponse UniversalZaloBot::_get(const String &host, const String &slug,
-                                    int port) {
+                                    int port, bool isPolling) {
   HttpResponse httpResponse;
 
 #ifdef HAS_FREERTOS
@@ -212,6 +251,7 @@ HttpResponse UniversalZaloBot::_get(const String &host, const String &slug,
     client->println(host);
     client->println(F("Accept: application/json"));
     client->println(F("Cache-Control: no-cache"));
+    client->println(F("Connection: keep-alive"));
     client->println();
 
 #ifdef ZALO_DEBUG
@@ -219,7 +259,7 @@ HttpResponse UniversalZaloBot::_get(const String &host, const String &slug,
     Serial.println(slug.length() ? slug : "/");
 #endif // ZALO_DEBUG
 
-    httpResponse = _parseHttpResponse();
+    httpResponse = _parseHttpResponse(isPolling);
   }
 
   _cleanupConnection();
@@ -227,7 +267,8 @@ HttpResponse UniversalZaloBot::_get(const String &host, const String &slug,
 }
 
 HttpResponse UniversalZaloBot::_post(const String &host, const String &slug,
-                                     int port, const String &payload) {
+                                     int port, const String &payload,
+                                     bool isPolling) {
   HttpResponse httpResponse;
 
 #ifdef HAS_FREERTOS
@@ -251,6 +292,7 @@ HttpResponse UniversalZaloBot::_post(const String &host, const String &slug,
     client->print(F("Host:"));
     client->println(host);
     client->println(F("Content-Type: application/json"));
+    client->println(F("Connection: keep-alive"));
     client->print(F("Content-Length:"));
     client->println(payload.length());
     client->println();
@@ -261,7 +303,7 @@ HttpResponse UniversalZaloBot::_post(const String &host, const String &slug,
     Serial.println(payload);
 #endif // ZALO_DEBUG
 
-    httpResponse = _parseHttpResponse();
+    httpResponse = _parseHttpResponse(isPolling);
   }
 
   _cleanupConnection();
@@ -279,7 +321,7 @@ HttpResponse UniversalZaloBot::_parseHttpResponse(bool isPolling) {
   int currentHttpTimeout = getHttpTimeout();
 
   if (isPolling) {
-    currentHttpTimeout += getLongPollTimeout();
+    currentHttpTimeout += getLongPollTimeout() * 1000;
   }
 
   while (millis() - now < currentHttpTimeout) {
@@ -306,15 +348,19 @@ HttpResponse UniversalZaloBot::_parseHttpResponse(bool isPolling) {
         currentLineIsBlank = false;
     }
 
+    if (responseReceived && !client->available()) {
+      break;
+    }
+
     _yield();
   }
 
   return httpResponse;
 }
 
-bool UniversalZaloBot::_checkZaloRequestSuccess(const String &payload) {
+bool UniversalZaloBot::_checkForOkResponse(const String &payload) {
   StaticJsonDocument<256> doc;
   DeserializationError error = deserializeJson(doc, payload);
 
-  return !error && doc["error_code"] == 0;
+  return !error && doc["ok"];
 }

@@ -17,7 +17,7 @@ Zalo is an instant messaging platform that supports bots for automation and remo
 ## 🚀 Features
 
 - [x] Send messages via Zalo Bot API  
-- [ ] Receive messages (planned)  
+- [x] Receive messages
 - [ ] Event handling system (planned)  
 - [ ] Long polling support (planned)  
 - [ ] Webhook support (planned)  
@@ -154,12 +154,13 @@ Here is a list of the main features that this library covers.
 | _Sending messages_      | Your bot can send messages to any Zalo account       | `bool sendMessage(const String &chat_id, const String &message)`                             |
 | _Sending photos_        | Your bot can send photos to any Zalo account         | `bool sendPhoto(const String &chat_id, const String &photo_url, const String &caption = "")` |
 | _Sending stickers_      | Your bot can send stickers to any Zalo account       | `bool sendSticker(const String &chat_id, const String &sticker_id)`                          |
-| _Sending chat action_   | Your bot can send chat actions to any Zalo account   | `bool sendChatAction(const String &chat_id, const String &action);`                          |
+| _Sending chat action_   | Your bot can send chat actions to any Zalo account   | `bool sendChatAction(const String &chat_id, const String &action)`                           |
+| _Receive messages_      | Your bot can receive messages via long polling       | `Message getUpdates()`                                                                       |
 
 
 ## 🧭 Roadmap
 
-* [ ] Incoming message support
+* [x] Incoming message support
 * [ ] Webhook integration
 * [ ] Event-driven architecture
 * [ ] Async request handling
