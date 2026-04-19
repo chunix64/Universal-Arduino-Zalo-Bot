@@ -21,7 +21,7 @@ Zalo is an instant messaging platform that supports bots for automation and remo
 - [ ] Event handling system (planned)  
 - [ ] Long polling support (planned)  
 - [ ] Webhook support (planned)  
-- [ ] Async / non-blocking operations (planned)  
+- [x] Async / non-blocking operations (ESP32)  
 
 ## 📦 Supported Boards
 
@@ -132,6 +132,8 @@ void setup() {
     delay(500);
   }
 
+  zalo.begin();
+
   Serial.println("");
   Serial.print("Connected to Wifi. Local IP: ");
   Serial.println(WiFi.localIP());  
@@ -148,6 +150,7 @@ Here is a list of the main features that this library covers.
 
 | Features                | Description                                          | Usage                                                                                        |
 |-------------------------|------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| _Begin_                 | Optional initial step (needed by FreeRTOS mode)      | `void begin()`                                                                               |
 | _Sending messages_      | Your bot can send messages to any Zalo account       | `bool sendMessage(const String &chat_id, const String &message)`                             |
 | _Sending photos_        | Your bot can send photos to any Zalo account         | `bool sendPhoto(const String &chat_id, const String &photo_url, const String &caption = "")` |
 | _Sending stickers_      | Your bot can send stickers to any Zalo account       | `bool sendSticker(const String &chat_id, const String &sticker_id)`                          |
@@ -160,7 +163,9 @@ Here is a list of the main features that this library covers.
 * [ ] Webhook integration
 * [ ] Event-driven architecture
 * [ ] Async request handling
-* [ ] Multi-thread support (FreeRTOS)
+* [x] Multi-thread support (FreeRTOS)
+* [ ] Add more FreeRTOS supported boards to the library
+* [ ] Reduce memory and ROM costs
 
 ## ⚠️ Notes
 
