@@ -132,6 +132,10 @@ void setup() {
     delay(500);
   }
 
+  Serial.println("");
+  Serial.print("Connected to Wifi. Local IP: ");
+  Serial.println(WiFi.localIP());  
+
   zalo.sendMessage(CHAT_ID, "Salve!");
 }
 
