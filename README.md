@@ -4,8 +4,6 @@ An Arduino library for interacting with the **Zalo Bot API**, designed to work a
 
 > ⚠️ This library is under active development. APIs and features may change.
 
----
-
 ## 📌 Introduction
 
 This library provides a simple interface for the [Zalo Bot API](https://bot.zaloplatforms.com/docs/call-api/), allowing Arduino-based devices to communicate with Zalo bots.
@@ -16,8 +14,6 @@ Zalo is an instant messaging platform that supports bots for automation and remo
 - Control hardware remotely via Zalo messages
 - Integrate Arduino projects with mobile notifications
 
----
-
 ## 🚀 Features
 
 - [x] Send messages via Zalo Bot API  
@@ -27,16 +23,12 @@ Zalo is an instant messaging platform that supports bots for automation and remo
 - [ ] Webhook support (planned)  
 - [ ] Async / non-blocking operations (planned)  
 
----
-
 ## 📦 Supported Boards
 
 - ESP32  
 - ESP8266  
 - Arduino Uno / Mega + WiFi shield / ESP01
 - Most Arduino-compatible boards with networking support
-
----
 
 ## 🛠 Installation
 
@@ -56,8 +48,6 @@ Sketch → Include Library → Add .ZIP Library...
 
 4. Select the downloaded ZIP file
 
----
-
 ### Option 2: Manual Installation (Git Clone)
 
 Clone the repository into your Arduino libraries folder:
@@ -68,8 +58,6 @@ git clone https://github.com/chunix64/Universal-Arduino-Zalo-Bot.git
 
 Then restart Arduino IDE.
 
----
-
 ## 📚 Dependencies
 
 This library requires:
@@ -77,8 +65,6 @@ This library requires:
 * [ArduinoJson](https://github.com/bblanchon/ArduinoJson) by Benoît Blanchon
 
 Install it via Library Manager or manually from GitHub.
-
----
 
 ## 🌱 Getting Started
 
@@ -92,6 +78,8 @@ To generate your new Bot, you need an Access Token. Talk to [Zalo Bot Manager](h
 ```
 https://bot-api.zaloplatforms.com/bot<YOUR_BOT_TOKEN>/getUpdates
 ```
+
+- With `YOUR_BOT_TOKEN` is your bot token from the previous step;
 
 2. Send a message to your bot on Zalo
 
@@ -113,8 +101,6 @@ Include UniversalZaloBot in your project:
 ```
 
 and pass it your bot token and your chat id, see the example for more details.
-
----
 
 ## 💡 Basic Usage Example
 
@@ -154,8 +140,6 @@ void loop() {
 }
 ```
 
----
-
 ## 🤖 Library API
 Here is a list of the main features that this library covers.
 
@@ -167,8 +151,6 @@ Here is a list of the main features that this library covers.
 | _Sending chat action_   | Your bot can send chat actions to any Zalo account   | `bool sendChatAction(const String &chat_id, const String &action);`                          |
 
 
----
-
 ## 🧭 Roadmap
 
 * [ ] Incoming message support
@@ -177,8 +159,6 @@ Here is a list of the main features that this library covers.
 * [ ] Async request handling
 * [ ] Multi-thread support (FreeRTOS)
 
----
-
 ## ⚠️ Notes
 
 * This library is experimental and may change frequently.
@@ -186,13 +166,9 @@ Here is a list of the main features that this library covers.
 * Contributions and feedback are welcome.
 * Zalo currently supports a limit of 3,000 sent messages per month. Please use it carefully.
 
----
-
 ## 📄 License
 
 GNU GPL v3
-
----
 
 ## 🤝 Credits
 
