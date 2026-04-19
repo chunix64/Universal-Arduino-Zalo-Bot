@@ -43,14 +43,13 @@ Zalo is an instant messaging platform that supports bots for automation and remo
 
 ```
 Sketch → Include Library → Add .ZIP Library...
-
 ````
 
 4. Select the downloaded ZIP file
 
-### Option 2: Manual Installation (Git Clone)
+### Option 2: Manual Installation
 
-Clone the repository into your Arduino libraries folder:
+Clone the repository or extract the .Zip library into your Arduino libraries folder:
 
 ```bash
 git clone https://github.com/chunix64/Universal-Arduino-Zalo-Bot.git
