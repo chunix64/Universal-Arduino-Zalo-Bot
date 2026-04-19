@@ -160,17 +160,25 @@ Message UniversalZaloBot::getUpdates() {
     return message;
   }
 
-  JsonObject resMessage = result["message"];
+  JsonObject msg = result["message"];
 
-  if (resMessage.isNull()) {
+  if (msg.isNull()) {
     return message;
   }
 
-  message.date = resMessage["date"] | 0ULL;
-  message.chat_id = resMessage["chat"]["id"] | "";
-  message.user_id = resMessage["from"]["id"] | "";
-  message.user_name = resMessage["from"]["display_name"] | "";
-  message.content = resMessage["text"] | "";
+  const char *type = result["event_name"] | "";
+
+  if (strcmp(type, "message.text.received") == 0) {
+    message.type = MESSAGE_TEXT;
+  } else {
+    message.type = MESSAGE_UNKNOWN;
+  }
+
+  message.date = msg["date"] | 0ULL;
+  message.chatId = msg["chat"]["id"] | "";
+  message.userId = msg["from"]["id"] | "";
+  message.userName = msg["from"]["display_name"] | "";
+  message.content = msg["text"] | "";
 
   return message;
 }
@@ -225,8 +233,17 @@ void UniversalZaloBot::_cleanupConnection() {
 #endif // ZALO_DEBUG
 }
 
-HttpResponse UniversalZaloBot::_get(const String &host, const String &slug,
-                                    int port, bool isPolling) {
+bool UniversalZaloBot::_checkForOkResponse(const String &payload) {
+  StaticJsonDocument<256> doc;
+  DeserializationError error = deserializeJson(doc, payload);
+
+  return !error && doc["ok"];
+}
+
+UniversalZaloBot::HttpResponse UniversalZaloBot::_get(const String &host,
+                                                      const String &slug,
+                                                      int port,
+                                                      bool isPolling) {
   HttpResponse httpResponse;
 
 #ifdef HAS_FREERTOS
@@ -266,9 +283,9 @@ HttpResponse UniversalZaloBot::_get(const String &host, const String &slug,
   return httpResponse;
 }
 
-HttpResponse UniversalZaloBot::_post(const String &host, const String &slug,
-                                     int port, const String &payload,
-                                     bool isPolling) {
+UniversalZaloBot::HttpResponse
+UniversalZaloBot::_post(const String &host, const String &slug, int port,
+                        const String &payload, bool isPolling) {
   HttpResponse httpResponse;
 
 #ifdef HAS_FREERTOS
@@ -310,7 +327,8 @@ HttpResponse UniversalZaloBot::_post(const String &host, const String &slug,
   return httpResponse;
 }
 
-HttpResponse UniversalZaloBot::_parseHttpResponse(bool isPolling) {
+UniversalZaloBot::HttpResponse
+UniversalZaloBot::_parseHttpResponse(bool isPolling) {
   HttpResponse httpResponse;
 
   int character_count = 0;
@@ -356,11 +374,4 @@ HttpResponse UniversalZaloBot::_parseHttpResponse(bool isPolling) {
   }
 
   return httpResponse;
-}
-
-bool UniversalZaloBot::_checkForOkResponse(const String &payload) {
-  StaticJsonDocument<256> doc;
-  DeserializationError error = deserializeJson(doc, payload);
-
-  return !error && doc["ok"];
 }

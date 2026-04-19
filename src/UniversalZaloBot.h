@@ -18,17 +18,20 @@
 #define HAS_FREERTOS 1
 #endif // ESP32
 
-struct HttpResponse {
-  String header;
-  String body;
+enum MessageType {
+  MESSAGE_UNKNOWN,
+  MESSAGE_TEXT,
+  MESSAGE_PHOTO,
+  MESSAGE_STICKER,
 };
 
 struct Message {
   unsigned long long date;
-  String chat_id;
-  String user_id;
-  String user_name;
+  String chatId;
+  String userId;
+  String userName;
   String content;
+  MessageType type;
 };
 
 class UniversalZaloBot {
@@ -58,26 +61,33 @@ public:
   Message getUpdates();
 
 private:
+  struct HttpResponse {
+    String header;
+    String body;
+  };
+
+#ifdef HAS_FREERTOS
+  SemaphoreHandle_t _clientMutex;
+#endif
+
   Client *client;
   String _apiHost;
   String _token;
   bool _isFreeRTOS;
-#ifdef HAS_FREERTOS
-  SemaphoreHandle_t _clientMutex;
-#endif
   int _longPollTimeout;
   int _httpTimeout;
   int _maxMessageLength;
   void _yield();
   bool _ensureConnection(const String &host, int port);
   void _cleanupConnection();
+  bool _checkForOkResponse(const String &payload);
+
   HttpResponse _get(const String &host, const String &slug = "/",
                     int port = 443, bool isPolling = false);
   HttpResponse _post(const String &host, const String &slug = "/",
                      int port = 443, const String &payload = "",
                      bool isPolling = false);
   HttpResponse _parseHttpResponse(bool isPolling = false);
-  bool _checkForOkResponse(const String &payload);
 };
 
 #ifdef HAS_FREERTOS
