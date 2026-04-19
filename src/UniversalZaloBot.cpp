@@ -166,7 +166,7 @@ Message UniversalZaloBot::getUpdates() {
     return message;
   }
 
-  message.date = resMessage["date"] | 0UL;
+  message.date = resMessage["date"] | 0ULL;
   message.chat_id = resMessage["chat"]["id"] | "";
   message.user_id = resMessage["from"]["id"] | "";
   message.user_name = resMessage["from"]["display_name"] | "";

@@ -24,7 +24,7 @@ struct HttpResponse {
 };
 
 struct Message {
-  unsigned long date;
+  unsigned long long date;
   String chat_id;
   String user_id;
   String user_name;
