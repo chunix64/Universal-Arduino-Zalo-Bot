@@ -1,4 +1,6 @@
 # Universal Zalo Bot Library
+[![en](https://img.shields.io/badge/lang-en-blue.svg)](https://github.com/chunix64/Universal-Arduino-Zalo-Bot/blob/main/README.md)
+[![vn](https://img.shields.io/badge/lang-vn-yellow.svg)](https://github.com/chunix64/Universal-Arduino-Zalo-Bot/blob/main/README.vn.md)
 
 An Arduino library for interacting with the Zalo Bot API, designed to work across multiple platforms including ESP32, ESP8266, and Arduino boards with WiFi modules.
 
