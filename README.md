@@ -18,10 +18,10 @@ Zalo is an instant messaging platform that supports bots for automation and remo
 
 - [x] Send messages via Zalo Bot API  
 - [x] Receive messages
-- [ ] Event handling system (planned)  
-- [ ] Long polling support (planned)  
+- [x] Event handling system
+- [x] Long polling support
+- [x] non-blocking operations (FreeRTOS) 
 - [ ] Webhook support (planned)  
-- [x] Async / non-blocking operations (ESP32)  
 
 ## 📦 Supported Boards
 
@@ -145,6 +145,9 @@ void loop() {
 }
 ```
 
+### More examples
+You can find more examples [here](https://github.com/chunix64/Universal-Arduino-Zalo-Bot/tree/main/examples)
+
 ## 🤖 Library API
 Here is a list of the main features that this library covers.
 
@@ -156,16 +159,14 @@ Here is a list of the main features that this library covers.
 | _Sending stickers_      | Your bot can send stickers to any Zalo account       | `bool sendSticker(const String &chat_id, const String &sticker_id)`                          |
 | _Sending chat action_   | Your bot can send chat actions to any Zalo account   | `bool sendChatAction(const String &chat_id, const String &action)`                           |
 | _Receive messages_      | Your bot can receive messages via long polling       | `Message getUpdates()`                                                                       |
-
+| _Handle updates_ | Your bot can handle incoming message updates in real time.<br><br>Required for `onText`, etc.<br><br>Should be used inside an infinite loop. | `void handleUpdate()` |
+| _onText_                | Handles callbacks triggered by incoming messages (long polling). | `void onText(ZaloEventCallback callback)`                                        |
 
 ## 🧭 Roadmap
 
-* [x] Incoming message support
 * [ ] Webhook integration
-* [ ] Event-driven architecture
-* [ ] Async request handling
-* [x] Multi-thread support (FreeRTOS)
 * [ ] Add more FreeRTOS supported boards to the library
+* [ ] Add more examples
 * [ ] Reduce memory and ROM costs
 
 ## ⚠️ Notes
@@ -174,6 +175,7 @@ Here is a list of the main features that this library covers.
 * Not all Zalo Bot API features are implemented yet.
 * Contributions and feedback are welcome.
 * Zalo currently supports a limit of 3,000 sent messages per month. Please use it carefully.
+* Zalo does not support long polling offsets, so messages may be lost if they are sent too quickly.
 
 ## 📄 License
 
