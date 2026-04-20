@@ -304,51 +304,6 @@ bool UniversalZaloBot::_checkForOkResponse(const String &payload) {
   return !error && doc["ok"];
 }
 
-UniversalZaloBot::HttpResponse UniversalZaloBot::_get(const String &host,
-                                                      const String &slug,
-                                                      int port,
-                                                      bool isPolling) {
-  HttpResponse httpResponse;
-
-#ifdef HAS_FREERTOS
-  if (_isFreeRTOS) {
-    MutexGuard guard(_clientMutex);
-#endif
-
-    if (!_ensureConnection(host, port))
-      return httpResponse;
-
-    if (client->connected()) {
-      if (_isDebug) {
-        Serial.print(F("[ZALO] Connected to "));
-        Serial.println(host);
-      }
-
-      client->print(F("GET "));
-      client->print(slug.length() ? slug : "/");
-      client->println(F(" HTTP/1.1"));
-      client->print(F("Host:"));
-      client->println(host);
-      client->println(F("Accept: application/json"));
-      client->println(F("Cache-Control: no-cache"));
-      client->println(F("Connection: keep-alive"));
-      client->println();
-
-      if (_isDebug) {
-        Serial.print(F("[ZALO] GET: "));
-        Serial.println(slug.length() ? slug : "/");
-      }
-
-      httpResponse = _parseHttpResponse(isPolling);
-    }
-
-    _cleanupConnection();
-#ifdef HAS_FREERTOS
-  }
-#endif // HAS_FREERTOS
-  return httpResponse;
-}
-
 UniversalZaloBot::HttpResponse
 UniversalZaloBot::_post(const String &host, const String &slug, int port,
                         const String &payload, bool isPolling) {

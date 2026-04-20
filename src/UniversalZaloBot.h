@@ -109,8 +109,6 @@ private:
   void _cleanupConnection();
   bool _checkForOkResponse(const String &payload);
 
-  HttpResponse _get(const String &host, const String &slug = "/",
-                    int port = 443, bool isPolling = false);
   HttpResponse _post(const String &host, const String &slug = "/",
                      int port = 443, const String &payload = "",
                      bool isPolling = false);
@@ -133,6 +131,23 @@ public:
     if (_taken) {
       xSemaphoreGive(_mutex);
     }
+  }
+
+  void unlock() {
+    if (_taken) {
+      xSemaphoreGive(_mutex);
+      _taken = false;
+    }
+  }
+
+  bool lock() {
+    if (!_taken) {
+      if (xSemaphoreTake(_mutex, portMAX_DELAY) == pdTRUE) {
+        _taken = true;
+        return true;
+      }
+    }
+    return false;
   }
 
 private:
