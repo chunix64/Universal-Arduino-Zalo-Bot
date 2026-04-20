@@ -92,6 +92,8 @@ That value is your `CHAT_ID`.
 
 > This current method is temporary. A simpler method is planned.
 
+> Tips: Now you can get your `CHAT_ID` or `USER_ID` directly by using `onUpdate()` and accessing `message.chatId` or `message.userId`.
+
 ### Use the library
 Include UniversalZaloBot in your project:
 
@@ -99,7 +101,7 @@ Include UniversalZaloBot in your project:
 #include <UniversalZaloBot.h>
 ```
 
-and pass it your bot token and your chat id, see the example for more details.
+and pass it your bot token, see the example for more details.
 
 ## 💡 Basic Usage Example
 
@@ -159,8 +161,12 @@ Here is a list of the main features that this library covers.
 | _Sending stickers_      | Your bot can send stickers to any Zalo account       | `bool sendSticker(const String &chat_id, const String &sticker_id)`                          |
 | _Sending chat action_   | Your bot can send chat actions to any Zalo account   | `bool sendChatAction(const String &chat_id, const String &action)`                           |
 | _Receive messages_      | Your bot can receive messages via long polling       | `Message getUpdates()`                                                                       |
-| _Handle updates_ | Your bot can handle incoming message updates in real time.<br><br>Required for `onText`, etc.<br><br>Should be used inside an infinite loop. | `void handleUpdate()` |
-| _onText_                | Handles callbacks triggered by incoming messages (long polling). | `void onText(ZaloEventCallback callback)`                                        |
+| _Handle updates_ | Your bot can handle incoming message updates in real time (long polling).<br><br>Required for `onText`, etc.<br><br>Should be used inside an infinite loop | `void handleUpdate()` |
+| _onText_                | Handles callbacks triggered by incoming text messages    | `void onText(ZaloEventCallback callback)`                                                |
+| _onPhoto_               | Handles callbacks triggered by incoming photo messages   | `void onPhoto(ZaloEventCallback callback)`                                               |
+| _onSticker_             | Handles callbacks triggered by incoming sticker messages | `void onSticker(ZaloEventCallback callback)`                                             |
+| _onUpdate_              | Handles callbacks triggered by any incoming messages     | `void onUpdate(ZaloEventCallback callback)`                                              |
+
 
 ## 🧭 Roadmap
 

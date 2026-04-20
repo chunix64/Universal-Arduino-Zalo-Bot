@@ -170,15 +170,22 @@ Message UniversalZaloBot::getUpdates() {
 
   if (strcmp(type, "message.text.received") == 0) {
     message.type = MESSAGE_TEXT;
+    message.content = msg["text"] | "";
+  } else if (strcmp(type, "message.image.received") == 0) {
+    message.type = MESSAGE_PHOTO;
+    message.content = msg["photo_url"] | "";
+  } else if (strcmp(type, "message.sticker.received") == 0) {
+    message.type = MESSAGE_STICKER;
+    message.content = msg["sticker"] | "";
   } else {
     message.type = MESSAGE_UNKNOWN;
+    message.content = "";
   }
 
   message.date = msg["date"] | 0ULL;
   message.chatId = msg["chat"]["id"] | "";
   message.userId = msg["from"]["id"] | "";
   message.userName = msg["from"]["display_name"] | "";
-  message.content = msg["text"] | "";
 
   return message;
 }
@@ -190,17 +197,37 @@ void UniversalZaloBot::handleUpdate() {
     return;
   }
 
+  _notifyObservers(_updateObservers, message);
+
   switch (message.type) {
-    case MESSAGE_TEXT:
-      _notifyObservers(_textObservers, message);
-      break;
-    default:
-      break;
+  case MESSAGE_TEXT:
+    _notifyObservers(_textObservers, message);
+    break;
+  case MESSAGE_PHOTO:
+    _notifyObservers(_photoObservers, message);
+    break;
+  case MESSAGE_STICKER:
+    _notifyObservers(_stickerObservers, message);
+    break;
+  default:
+    break;
   }
 }
 
 void UniversalZaloBot::onText(ZaloEventCallback callback) {
   _registerObserver(&_textObservers, callback);
+}
+
+void UniversalZaloBot::onPhoto(ZaloEventCallback callback) {
+  _registerObserver(&_photoObservers, callback);
+}
+
+void UniversalZaloBot::onSticker(ZaloEventCallback callback) {
+  _registerObserver(&_stickerObservers, callback);
+}
+
+void UniversalZaloBot::onUpdate(ZaloEventCallback callback) {
+  _registerObserver(&_updateObservers, callback);
 }
 
 //---------------------------------------------------------

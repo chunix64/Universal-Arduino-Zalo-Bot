@@ -65,6 +65,9 @@ public:
   void handleUpdate();
 
   void onText(ZaloEventCallback callback);
+  void onPhoto(ZaloEventCallback callback);
+  void onSticker(ZaloEventCallback callback);
+  void onUpdate(ZaloEventCallback callback);
 
 private:
   struct HttpResponse {
@@ -78,6 +81,9 @@ private:
   };
 
   ObserverNode *_textObservers = nullptr;
+  ObserverNode *_photoObservers = nullptr;
+  ObserverNode *_stickerObservers = nullptr;
+  ObserverNode *_updateObservers = nullptr;
 
 #ifdef HAS_FREERTOS
   SemaphoreHandle_t _clientMutex;

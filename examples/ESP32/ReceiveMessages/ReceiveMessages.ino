@@ -1,9 +1,9 @@
+#include <UniversalZaloBot.h>
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
-#include <UniversalZaloBot.h>
 
-const char* ssid = "YOUR_WIFI_SSID";
-const char* password = "YOUR_WIFI_PASSWORD";
+const char *ssid = "YOUR_WIFI_SSID";
+const char *password = "YOUR_WIFI_PASSWORD";
 
 #define BOT_TOKEN "YOUR_ZALO_BOT_TOKEN"
 
@@ -24,7 +24,7 @@ void setup() {
     Serial.print(".");
     delay(500);
   }
-  
+
   zalo.begin();
 
   Serial.println("");
@@ -46,8 +46,8 @@ void setup() {
   );
 }
 
-void zaloTask(void* pvParameters) {
-  while(true) {
+void zaloTask(void *pvParameters) {
+  while (true) {
     zalo.handleUpdate();
     vTaskDelay(pdMS_TO_TICKS(1));
   }
