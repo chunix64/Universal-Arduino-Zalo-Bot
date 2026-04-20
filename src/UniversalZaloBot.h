@@ -6,7 +6,6 @@
 
 #ifndef UNIVERSAL_ZALO_BOT_H
 #define UNIVERSAL_ZALO_BOT_H
-// #define ZALO_DEBUG
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
@@ -44,6 +43,7 @@ class UniversalZaloBot {
 public:
   UniversalZaloBot(const String &token, Client &client,
                    bool isFreeRTOS = false);
+  void setDebug(bool isDebug);
   void begin();
   void setApiHost(const String &host);
   String getApiHost();
@@ -99,6 +99,7 @@ private:
   Client *client;
   String _apiHost;
   String _token;
+  bool _isDebug;
   bool _isFreeRTOS;
   int _longPollTimeout;
   int _httpTimeout;

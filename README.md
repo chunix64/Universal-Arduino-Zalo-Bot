@@ -156,6 +156,7 @@ Here is a list of the main features that this library covers.
 | Features                | Description                                          | Usage                                                                                        |
 |-------------------------|------------------------------------------------------|----------------------------------------------------------------------------------------------|
 | _Begin_                 | Optional initial step (needed by FreeRTOS mode)      | `void begin()`                                                                               |
+| _Debug_                 | Show logs and useful data                            | `setDebug(bool isDebug)`                                                                     |
 | _Sending messages_      | Your bot can send messages to any Zalo account       | `bool sendMessage(const String &chat_id, const String &message)`                             |
 | _Sending photos_        | Your bot can send photos to any Zalo account         | `bool sendPhoto(const String &chat_id, const String &photo_url, const String &caption = "")` |
 | _Sending stickers_      | Your bot can send stickers to any Zalo account       | `bool sendSticker(const String &chat_id, const String &sticker_id)`                          |
@@ -166,6 +167,7 @@ Here is a list of the main features that this library covers.
 | _onPhoto_               | Handles callbacks triggered by incoming photo messages   | `void onPhoto(ZaloEventCallback callback)`                                               |
 | _onSticker_             | Handles callbacks triggered by incoming sticker messages | `void onSticker(ZaloEventCallback callback)`                                             |
 | _onUpdate_              | Handles callbacks triggered by any incoming messages     | `void onUpdate(ZaloEventCallback callback)`                                              |
+| _onCommand_             | Handles callbacks triggered by any matched messenges (startswith) <br><br> > ESP32 and ESP8266 only | `void onCommand(const String &command, ZaloEventCallback callback)` |
 
 
 ## 🧭 Roadmap

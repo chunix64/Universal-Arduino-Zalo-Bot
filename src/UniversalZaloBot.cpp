@@ -2,6 +2,7 @@
 
 UniversalZaloBot::UniversalZaloBot(const String &token, Client &client,
                                    bool isFreeRTOS) {
+  setDebug(false);
   setToken(token);
   setApiHost("bot-api.zaloplatforms.com");
   setLongPollTimeout(30);
@@ -12,13 +13,13 @@ UniversalZaloBot::UniversalZaloBot(const String &token, Client &client,
   this->client = &client;
 }
 
+void UniversalZaloBot::setDebug(bool isDebug) { _isDebug = isDebug; }
+
 void UniversalZaloBot::begin() {
 #ifndef HAS_FREERTOS
-#ifdef ZALO_DEBUG
-  if (_isFreeRTOS) {
+  if (_isFreeRTOS && _isDebug) {
     Serial.println("Your board does not support FreeRTOS");
   }
-#endif // ZALO_DEBUG
 #endif // !HAS_FREERTOS
 
 #ifdef HAS_FREERTOS
@@ -48,7 +49,7 @@ void UniversalZaloBot::setHttpTimeout(int httpTimeout) {
   _httpTimeout = httpTimeout;
 }
 
-int UniversalZaloBot::getHttpTimeout() { return _httpTimeout; };
+int UniversalZaloBot::getHttpTimeout() { return _httpTimeout; }
 
 void UniversalZaloBot::setMaxMessageLength(int maxMessageLength) {
   _maxMessageLength = maxMessageLength;
@@ -268,15 +269,16 @@ bool UniversalZaloBot::_ensureConnection(const String &host, int port) {
   }
 
   if (!client->connected()) {
-#ifdef ZALO_DEBUG
-    Serial.print(F("[ZALO] Connecting to "));
-    Serial.println(host);
-#endif // ZALO_DEBUG
+    if (_isDebug) {
+      Serial.print(F("[ZALO] Connecting to "));
+      Serial.println(host);
+    }
 
     if (!client->connect(host.c_str(), port)) {
-#ifdef ZALO_DEBUG
-      Serial.println(F("[ZALO] Connection error"));
-#endif // ZALO_DEBUG
+      if (_isDebug) {
+        Serial.println(F("[ZALO] Connection error"));
+      }
+
       return false;
     }
   }
@@ -290,9 +292,9 @@ void UniversalZaloBot::_cleanupConnection() {
     client->stop();
   }
 
-#ifdef ZALO_DEBUG
-  Serial.println("[ZALO] Connection cleaned");
-#endif // ZALO_DEBUG
+  if (_isDebug) {
+    Serial.println("[ZALO] Connection cleaned");
+  }
 }
 
 bool UniversalZaloBot::_checkForOkResponse(const String &payload) {
@@ -318,10 +320,10 @@ UniversalZaloBot::HttpResponse UniversalZaloBot::_get(const String &host,
     return httpResponse;
 
   if (client->connected()) {
-#ifdef ZALO_DEBUG
-    Serial.print(F("[ZALO] Connected to "));
-    Serial.println(host);
-#endif // ZALO_DEBUG
+    if (_isDebug) {
+      Serial.print(F("[ZALO] Connected to "));
+      Serial.println(host);
+    }
 
     client->print(F("GET "));
     client->print(slug.length() ? slug : "/");
@@ -333,10 +335,10 @@ UniversalZaloBot::HttpResponse UniversalZaloBot::_get(const String &host,
     client->println(F("Connection: keep-alive"));
     client->println();
 
-#ifdef ZALO_DEBUG
-    Serial.print(F("[ZALO] GET: "));
-    Serial.println(slug.length() ? slug : "/");
-#endif // ZALO_DEBUG
+    if (_isDebug) {
+      Serial.print(F("[ZALO] GET: "));
+      Serial.println(slug.length() ? slug : "/");
+    }
 
     httpResponse = _parseHttpResponse(isPolling);
   }
@@ -360,10 +362,10 @@ UniversalZaloBot::_post(const String &host, const String &slug, int port,
     return httpResponse;
 
   if (client->connected()) {
-#ifdef ZALO_DEBUG
-    Serial.print(F("[ZALO] Connected to "));
-    Serial.println(host);
-#endif // ZALO_DEBUG
+    if (_isDebug) {
+      Serial.print(F("[ZALO] Connected to "));
+      Serial.println(host);
+    }
 
     client->print(F("POST "));
     client->print(slug.length() ? slug : "/");
@@ -377,10 +379,10 @@ UniversalZaloBot::_post(const String &host, const String &slug, int port,
     client->println();
     client->println(payload);
 
-#ifdef ZALO_DEBUG
-    Serial.print(F("[ZALO] POST: "));
-    Serial.println(payload);
-#endif // ZALO_DEBUG
+    if (_isDebug) {
+      Serial.print(F("[ZALO] POST: "));
+      Serial.println(payload);
+    }
 
     httpResponse = _parseHttpResponse(isPolling);
   }
