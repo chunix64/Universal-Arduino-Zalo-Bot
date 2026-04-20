@@ -6,7 +6,7 @@
 
 #ifndef UNIVERSAL_ZALO_BOT_H
 #define UNIVERSAL_ZALO_BOT_H
-#define ZALO_DEBUG
+// #define ZALO_DEBUG
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
@@ -34,6 +34,8 @@ struct Message {
   MessageType type;
 };
 
+typedef void (*ZaloEventCallback)(const Message &message);
+
 class UniversalZaloBot {
 public:
   UniversalZaloBot(const String &token, Client &client,
@@ -60,11 +62,22 @@ public:
   bool sendChatAction(const String &chat_id, const String &action);
   Message getUpdates();
 
+  void handleUpdate();
+
+  void onText(ZaloEventCallback callback);
+
 private:
   struct HttpResponse {
     String header;
     String body;
   };
+
+  struct ObserverNode {
+    ZaloEventCallback callback;
+    ObserverNode *next;
+  };
+
+  ObserverNode *_textObservers = nullptr;
 
 #ifdef HAS_FREERTOS
   SemaphoreHandle_t _clientMutex;
@@ -88,6 +101,9 @@ private:
                      int port = 443, const String &payload = "",
                      bool isPolling = false);
   HttpResponse _parseHttpResponse(bool isPolling = false);
+
+  void _registerObserver(ObserverNode **head, ZaloEventCallback callback);
+  void _notifyObservers(ObserverNode *head, const Message &message);
 };
 
 #ifdef HAS_FREERTOS

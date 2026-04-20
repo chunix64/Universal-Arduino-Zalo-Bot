@@ -183,6 +183,26 @@ Message UniversalZaloBot::getUpdates() {
   return message;
 }
 
+void UniversalZaloBot::handleUpdate() {
+  Message message = getUpdates();
+
+  if (message.type == MESSAGE_UNKNOWN) {
+    return;
+  }
+
+  switch (message.type) {
+    case MESSAGE_TEXT:
+      _notifyObservers(_textObservers, message);
+      break;
+    default:
+      break;
+  }
+}
+
+void UniversalZaloBot::onText(ZaloEventCallback callback) {
+  _registerObserver(&_textObservers, callback);
+}
+
 //---------------------------------------------------------
 //
 // Private
@@ -374,4 +394,26 @@ UniversalZaloBot::_parseHttpResponse(bool isPolling) {
   }
 
   return httpResponse;
+}
+
+void UniversalZaloBot::_registerObserver(ObserverNode **head,
+                                         ZaloEventCallback callback) {
+  if (callback == nullptr) {
+    return;
+  }
+
+  ObserverNode *node = new ObserverNode{callback, *head};
+  *head = node;
+}
+
+void UniversalZaloBot::_notifyObservers(ObserverNode *head,
+                                        const Message &message) {
+  ObserverNode *current = head;
+
+  while (current) {
+    if (current->callback) {
+      current->callback(message);
+    }
+    current = current->next;
+  }
 }
