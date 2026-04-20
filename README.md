@@ -136,6 +136,7 @@ Here is a list of the main features that this library covers.
 * Zalo currently supports a limit of 3,000 sent messages per month. Please use it carefully.
 * Zalo does not support long polling offsets, so messages may be lost if they are sent too quickly.
 * Parallel, non-blocking mode is supported with FreeRTOS (ESP32).
+* When using FreeRTOS mode, the network task (Zalo) must run on Core 0 to avoid crashes.
 
 ## Roadmap
 
