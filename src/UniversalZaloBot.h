@@ -31,7 +31,7 @@ struct Message {
   String userId;
   String userName;
   String content;
-  MessageType type;
+  MessageType type = MESSAGE_UNKNOWN;
 };
 
 typedef void (*ZaloEventCallback)(const Message &message);
