@@ -182,7 +182,6 @@ Message UniversalZaloBot::getUpdates() {
     message.content = "";
   }
 
-  message.date = msg["date"] | 0ULL;
   message.chatId = msg["chat"]["id"] | "";
   message.userId = msg["from"]["id"] | "";
   message.userName = msg["from"]["display_name"] | "";
@@ -229,6 +228,22 @@ void UniversalZaloBot::onSticker(ZaloEventCallback callback) {
 void UniversalZaloBot::onUpdate(ZaloEventCallback callback) {
   _registerObserver(&_updateObservers, callback);
 }
+
+#if defined(ESP32) || defined(ESP8266)
+void UniversalZaloBot::onCommand(const String &command,
+                                 ZaloEventCallback callback) {
+  _registerObserver(&_textObservers,
+                    [command, callback](const Message &message) {
+                      if (message.type != MESSAGE_TEXT) {
+                        return;
+                      }
+
+                      if (message.content.startsWith(command)) {
+                        callback(message);
+                      }
+                    });
+}
+#endif // defined(ESP32) || defined(ESP8266)
 
 //---------------------------------------------------------
 //

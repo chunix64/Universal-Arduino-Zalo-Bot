@@ -26,7 +26,6 @@ enum MessageType {
 };
 
 struct Message {
-  unsigned long long date;
   String chatId;
   String userId;
   String userName;
@@ -34,7 +33,12 @@ struct Message {
   MessageType type = MESSAGE_UNKNOWN;
 };
 
-typedef void (*ZaloEventCallback)(const Message &message);
+#if defined(ESP32) || defined(ESP8266)
+#include <functional>
+typedef std::function<void(const Message &)> ZaloEventCallback;
+#else
+typedef void (*ZaloEventCallback)(const Message &);
+#endif // defined(ESP32) || defined(ESP8266)
 
 class UniversalZaloBot {
 public:
@@ -68,6 +72,9 @@ public:
   void onPhoto(ZaloEventCallback callback);
   void onSticker(ZaloEventCallback callback);
   void onUpdate(ZaloEventCallback callback);
+#if defined(ESP32) || defined(ESP8266)
+  void onCommand(const String &command, ZaloEventCallback callback);
+#endif // defined(ESP32) || defined(ESP8266)
 
 private:
   struct HttpResponse {

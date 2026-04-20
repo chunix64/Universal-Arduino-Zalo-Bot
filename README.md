@@ -70,7 +70,7 @@ Install it via Library Manager or manually from GitHub.
 ### Create a zalo bot
 To generate your new Bot, you need an Access Token. Talk to [Zalo Bot Manager](http://zalo.me/3899658094114941620) and follow a few simple steps described [here](https://bot.zaloplatforms.com/docs/create-bot/).
 
-### Getting Your Chat ID
+### Getting your chat ID
 
 1. Open the following URL in your browser:
 
