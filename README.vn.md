@@ -81,7 +81,7 @@ void setup() {
     delay(500);
   }
 
-  zalo.begin();  // tùy chọn nhưng cần thiết cho chế độ FreeRTOS
+  zalo.begin();  // Có thể có hoặc không (optional)
 
   Serial.println("");
   Serial.print("Đã kết nối WiFi. IP nội bộ: ");
@@ -118,7 +118,7 @@ Dưới đây là danh sách các tính năng chính mà thư viện này cung c
 
 | Tính năng               | Mô tả                                                | Cách dùng                                                                                    |
 |-------------------------|------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| _Begin_                 | Bước khởi tạo tùy chọn (cần thiết cho chế độ FreeRTOS) | `void begin()`                                                                            |
+| _Begin_                 | Có thể có hoặc không (optional)                      | `void begin()`                                                                            |
 | _Debug_                 | Hiển thị log và dữ liệu hữu ích                      | `setDebug(bool isDebug)`                                                                     |
 | _Gửi tin nhắn_          | Bot có thể gửi tin nhắn tới bất kỳ tài khoản Zalo nào | `bool sendMessage(const String &chat_id, const String &message)`                           |
 | _Gửi ảnh_               | Bot có thể gửi ảnh tới bất kỳ tài khoản Zalo nào    | `bool sendPhoto(const String &chat_id, const String &photo_url, const String &caption = "")` |

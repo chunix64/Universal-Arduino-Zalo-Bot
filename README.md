@@ -81,7 +81,7 @@ void setup() {
     delay(500);
   }
 
-  zalo.begin();  // optional but needed by FreeRTOS mode
+  zalo.begin();  // optional
 
   Serial.println("");
   Serial.print("Connected to Wifi. Local IP: ");
@@ -118,7 +118,7 @@ Here is a list of the main features that this library covers.
 
 | Features                | Description                                          | Usage                                                                                        |
 |-------------------------|------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| _Begin_                 | Optional initial step (needed by FreeRTOS mode)      | `void begin()`                                                                               |
+| _Begin_                 | Optional                                             | `void begin()`                                                                               |
 | _Debug_                 | Show logs and useful data                            | `setDebug(bool isDebug)`                                                                     |
 | _Sending messages_      | Your bot can send messages to any Zalo account       | `bool sendMessage(const String &chat_id, const String &message)`                             |
 | _Sending photos_        | Your bot can send photos to any Zalo account         | `bool sendPhoto(const String &chat_id, const String &photo_url, const String &caption = "")` |

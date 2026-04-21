@@ -112,6 +112,8 @@ private:
   HttpResponse _post(const String &host, const String &slug = "/",
                      int port = 443, const String &payload = "",
                      bool isPolling = false);
+  HttpResponse _postInternal(const String &host, const String &slug, int port,
+                             const String &payload, bool isPolling);
   HttpResponse _parseHttpResponse(bool isPolling = false);
 
   void _registerObserver(ObserverNode **head, ZaloEventCallback callback);

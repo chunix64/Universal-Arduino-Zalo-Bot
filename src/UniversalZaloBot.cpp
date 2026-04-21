@@ -11,6 +11,14 @@ UniversalZaloBot::UniversalZaloBot(const String &token, Client &client,
   _isFreeRTOS = isFreeRTOS;
 
   this->client = &client;
+
+#ifdef HAS_FREERTOS
+  if (_isFreeRTOS) {
+    if (_clientMutex == nullptr) {
+      _clientMutex = xSemaphoreCreateMutex();
+    }
+  }
+#endif
 }
 
 void UniversalZaloBot::setDebug(bool isDebug) { _isDebug = isDebug; }
@@ -21,14 +29,6 @@ void UniversalZaloBot::begin() {
     Serial.println("Your board does not support FreeRTOS");
   }
 #endif // !HAS_FREERTOS
-
-#ifdef HAS_FREERTOS
-  if (_isFreeRTOS) {
-    if (_clientMutex == nullptr) {
-      _clientMutex = xSemaphoreCreateMutex();
-    }
-  }
-#endif
 }
 
 void UniversalZaloBot::setApiHost(const String &host) { _apiHost = host; }
@@ -312,40 +312,50 @@ UniversalZaloBot::_post(const String &host, const String &slug, int port,
 #ifdef HAS_FREERTOS
   if (_isFreeRTOS) {
     MutexGuard guard(_clientMutex);
+    httpResponse = _postInternal(host, slug, port, payload, isPolling);
+    return httpResponse;
+  }
 #endif
-    if (!_ensureConnection(host, port))
-      return httpResponse;
 
-    if (client->connected()) {
-      if (_isDebug) {
-        Serial.print(F("[ZALO] Connected to "));
-        Serial.println(host);
-      }
+  httpResponse = _postInternal(host, slug, port, payload, isPolling);
+  return httpResponse;
+}
 
-      client->print(F("POST "));
-      client->print(slug.length() ? slug : "/");
-      client->println(F(" HTTP/1.1"));
-      client->print(F("Host:"));
-      client->println(host);
-      client->println(F("Content-Type: application/json"));
-      client->println(F("Connection: keep-alive"));
-      client->print(F("Content-Length:"));
-      client->println(payload.length());
-      client->println();
-      client->println(payload);
+UniversalZaloBot::HttpResponse
+UniversalZaloBot::_postInternal(const String &host, const String &slug,
+                                int port, const String &payload,
+                                bool isPolling) {
+  HttpResponse httpResponse;
+  if (!_ensureConnection(host, port))
+    return httpResponse;
 
-      if (_isDebug) {
-        Serial.print(F("[ZALO] POST: "));
-        Serial.println(payload);
-      }
-
-      httpResponse = _parseHttpResponse(isPolling);
+  if (client->connected()) {
+    if (_isDebug) {
+      Serial.print(F("[ZALO] Connected to "));
+      Serial.println(host);
     }
 
-    _cleanupConnection();
-#ifdef HAS_FREERTOS
+    client->print(F("POST "));
+    client->print(slug.length() ? slug : "/");
+    client->println(F(" HTTP/1.1"));
+    client->print(F("Host:"));
+    client->println(host);
+    client->println(F("Content-Type: application/json"));
+    client->println(F("Connection: keep-alive"));
+    client->print(F("Content-Length:"));
+    client->println(payload.length());
+    client->println();
+    client->println(payload);
+
+    if (_isDebug) {
+      Serial.print(F("[ZALO] POST: "));
+      Serial.println(payload);
+    }
+
+    httpResponse = _parseHttpResponse(isPolling);
   }
-#endif // HAS_FREERTOS
+
+  _cleanupConnection();
   return httpResponse;
 }
 
