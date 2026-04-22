@@ -43,6 +43,7 @@ class UniversalZaloBot {
 public:
   UniversalZaloBot(const String &token, Client &client,
                    bool isFreeRTOS = false);
+  ~UniversalZaloBot();
   void setDebug(bool isDebug);
   void begin();
   void setApiHost(const String &host);
@@ -93,7 +94,7 @@ private:
   ObserverNode *_updateObservers = nullptr;
 
 #ifdef HAS_FREERTOS
-  SemaphoreHandle_t _clientMutex;
+  SemaphoreHandle_t _clientMutex = nullptr;
 #endif
 
   Client *client;
@@ -118,39 +119,19 @@ private:
 
   void _registerObserver(ObserverNode **head, ZaloEventCallback callback);
   void _notifyObservers(ObserverNode *head, const Message &message);
+  void _freeObservers(ObserverNode *head);
 };
 
 #ifdef HAS_FREERTOS
 class MutexGuard {
 public:
-  MutexGuard(SemaphoreHandle_t &mutex) : _mutex(mutex), _taken(false) {
-    if (xSemaphoreTake(_mutex, portMAX_DELAY) == pdTRUE) {
-      _taken = true;
-    }
-  }
+  MutexGuard(SemaphoreHandle_t &mutex);
+  ~MutexGuard();
+  void unlock();
+  bool lock();
 
-  ~MutexGuard() {
-    if (_taken) {
-      xSemaphoreGive(_mutex);
-    }
-  }
-
-  void unlock() {
-    if (_taken) {
-      xSemaphoreGive(_mutex);
-      _taken = false;
-    }
-  }
-
-  bool lock() {
-    if (!_taken) {
-      if (xSemaphoreTake(_mutex, portMAX_DELAY) == pdTRUE) {
-        _taken = true;
-        return true;
-      }
-    }
-    return false;
-  }
+  MutexGuard(const MutexGuard &) = delete;
+  MutexGuard &operator=(const MutexGuard &) = delete;
 
 private:
   SemaphoreHandle_t &_mutex;

@@ -21,6 +21,13 @@ UniversalZaloBot::UniversalZaloBot(const String &token, Client &client,
 #endif
 }
 
+UniversalZaloBot::~UniversalZaloBot() {
+  _freeObservers(_textObservers);
+  _freeObservers(_photoObservers);
+  _freeObservers(_stickerObservers);
+  _freeObservers(_updateObservers);
+}
+
 void UniversalZaloBot::setDebug(bool isDebug) { _isDebug = isDebug; }
 
 void UniversalZaloBot::begin() {
@@ -429,3 +436,43 @@ void UniversalZaloBot::_notifyObservers(ObserverNode *head,
     current = current->next;
   }
 }
+
+void UniversalZaloBot::_freeObservers(ObserverNode *head) {
+  while (head) {
+    ObserverNode *temp = head;
+    head = head->next;
+    delete temp;
+  }
+}
+
+#ifdef HAS_FREERTOS
+MutexGuard::MutexGuard(SemaphoreHandle_t &mutex)
+    : _mutex(mutex), _taken(false) {
+  if (xSemaphoreTake(_mutex, portMAX_DELAY) == pdTRUE) {
+    _taken = true;
+  }
+}
+
+MutexGuard::~MutexGuard() {
+  if (_taken) {
+    xSemaphoreGive(_mutex);
+  }
+}
+
+void MutexGuard::unlock() {
+  if (_taken) {
+    xSemaphoreGive(_mutex);
+    _taken = false;
+  }
+}
+
+bool MutexGuard::lock() {
+  if (!_taken) {
+    if (xSemaphoreTake(_mutex, portMAX_DELAY) == pdTRUE) {
+      _taken = true;
+      return true;
+    }
+  }
+  return false;
+}
+#endif // HAS_FREERTOS
