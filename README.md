@@ -155,7 +155,7 @@ Please make sure to update tests as appropriate.
 
 ## License
 
-This project is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html).
+This project is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 ## Credits
 * Maintainer: [chunix64](https://github.com/chunix64)

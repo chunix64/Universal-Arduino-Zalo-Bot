@@ -153,7 +153,7 @@ Hãy đảm bảo cập nhật các bài kiểm thử khi cần thiết.
 
 ## Giấy Phép
 
-Dự án này được cấp phép theo [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html).
+Dự án này được cấp phép theo [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 ## Ghi Công
 * Người bảo trì: [chunix64](https://github.com/chunix64)
