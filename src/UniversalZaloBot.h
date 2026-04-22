@@ -41,7 +41,8 @@ typedef void (*ZaloEventCallback)(const Message &);
 
 class UniversalZaloBot {
 public:
-  UniversalZaloBot(const String &token, Client &client,
+  UniversalZaloBot(const String &token,
+                   Client &client,
                    bool isFreeRTOS = false);
   ~UniversalZaloBot();
   void setDebug(bool isDebug);
@@ -61,7 +62,8 @@ public:
   bool isTokenValid();
   String getBotName();
   bool sendMessage(const String &chat_id, const String &message);
-  bool sendPhoto(const String &chat_id, const String &photo_url,
+  bool sendPhoto(const String &chat_id,
+                 const String &photo_url,
                  const String &caption = "");
   bool sendSticker(const String &chat_id, const String &sticker_id);
   bool sendChatAction(const String &chat_id, const String &action);
@@ -97,7 +99,7 @@ private:
   SemaphoreHandle_t _clientMutex = nullptr;
 #endif
 
-  Client *client;
+  Client *_client;
   String _apiHost;
   String _token;
   bool _isDebug;
@@ -110,11 +112,16 @@ private:
   void _cleanupConnection();
   bool _checkForOkResponse(const String &payload);
 
-  HttpResponse _post(const String &host, const String &slug = "/",
-                     int port = 443, const String &payload = "",
+  HttpResponse _post(const String &host,
+                     const String &slug = "/",
+                     int port = 443,
+                     const String &payload = "",
                      bool isPolling = false);
-  HttpResponse _postInternal(const String &host, const String &slug, int port,
-                             const String &payload, bool isPolling);
+  HttpResponse _postInternal(const String &host,
+                             const String &slug,
+                             int port,
+                             const String &payload,
+                             bool isPolling);
   HttpResponse _parseHttpResponse(bool isPolling = false);
 
   void _registerObserver(ObserverNode **head, ZaloEventCallback callback);
