@@ -53,6 +53,11 @@ Trong đó `BOT_TOKEN` là access token của Zalo bot và `client` là network 
 zalo.begin(); // tùy chọn nhưng cần thiết cho chế độ FreeRTOS
 ```
 
+Chế độ FreeRTOS:
+```ino
+UniversalZaloBot zalo(BOT_TOKEN, client, true);
+```
+
 ## Ví Dụ
 ### In tin nhắn nhận được ra console
 ```ino
@@ -136,6 +141,8 @@ Dưới đây là danh sách các tính năng chính mà thư viện này cung c
 * Zalo hiện giới hạn 3.000 tin nhắn gửi mỗi tháng. Vui lòng sử dụng cẩn thận.
 * Zalo không hỗ trợ long polling offset, do đó tin nhắn có thể bị mất nếu gửi quá nhanh.
 * Chế độ song song, không chặn luồng được hỗ trợ với FreeRTOS (ESP32).
+* Khi sử dụng chế độ FreeRTOS, tác vụ mạng (Zalo) phải chạy trên Core 0 để tránh bị treo hoặc crash.
+* Nên sử dụng FreeRTOS để quản lý tác vụ hiệu quả bằng cách sử dụng 2 instances—một để nhận và một để gửi—để quá trình nhận không chặn quá trình gửi do long polling
 
 ## Lộ Trình Phát Triển
 

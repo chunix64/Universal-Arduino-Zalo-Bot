@@ -46,6 +46,11 @@ To generate your new Bot, you need an Access Token. Talk to [Zalo Bot Manager](h
 UniversalZaloBot zalo(BOT_TOKEN, client);
 ```
 
+For FreeRTOS mode:
+```ino
+UniversalZaloBot zalo(BOT_TOKEN, client, true);
+```
+
 where `BOT_TOKEN` is your Zalo bot access token and `client` is your network client.
 
 ### Basic setup
@@ -137,6 +142,7 @@ Here is a list of the main features that this library covers.
 * Zalo does not support long polling offsets, so messages may be lost if they are sent too quickly.
 * Parallel, non-blocking mode is supported with FreeRTOS (ESP32).
 * When using FreeRTOS mode, the network task (Zalo) must run on Core 0 to avoid crashes.
+* Use FreeRTOS to manage tasks efficiently by using two separate instances—one for receiving and one for sending—so the receiver doesn’t block the sender with long polling.
 
 ## Roadmap
 
