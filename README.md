@@ -5,29 +5,18 @@
 An Arduino library for interacting with the Zalo Bot API, designed to work across multiple platforms including ESP32, ESP8266, and Arduino boards with WiFi modules.
 
 ## Installation
-### Option 1: Install via Arduino IDE (ZIP)
+1. Open **Arduino IDE**
+2. Go to:
 
-1. Download the library: [https://github.com/chunix64/Universal-Arduino-Zalo-Bot/archive/refs/heads/main.zip](https://github.com/chunix64/Universal-Arduino-Zalo-Bot/archive/refs/heads/main.zip)
+   ```
+   Sketch → Include Library → Manage Libraries
+   ```
+3. Search for:
 
-2. Open Arduino IDE
-
-3. Go to:
-
-```
-Sketch → Include Library → Add .ZIP Library...
-````
-
-4. Select the downloaded ZIP file
-
-### Option 2: Manual Installation
-
-Clone the repository or extract the .Zip library into your Arduino libraries folder:
-
-```bash
-git clone https://github.com/chunix64/Universal-Arduino-Zalo-Bot.git
-````
-
-Then restart Arduino IDE
+   ```
+   Universal Arduino Zalo Bot
+   ```
+4. Click **Install**
 
 ## Dependencies
 
@@ -42,6 +31,7 @@ Install it via Library Manager or manually from GitHub.
 To generate your new Bot, you need an Access Token. Talk to [Zalo Bot Manager](http://zalo.me/3899658094114941620) and follow a few simple steps described [here](https://bot.zaloplatforms.com/docs/create-bot/).
 
 ### Setup your bot
+For normal mode:
 ```ino
 UniversalZaloBot zalo(BOT_TOKEN, client);
 ```

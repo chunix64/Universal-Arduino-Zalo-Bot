@@ -5,29 +5,18 @@
 Một thư viện Arduino để tương tác với Zalo Bot API, được thiết kế để hoạt động trên nhiều nền tảng bao gồm ESP32, ESP8266, và các bo mạch Arduino có module WiFi.
 
 ## Cài Đặt
-### Tùy chọn 1: Cài qua Arduino IDE (ZIP)
+1. Mở **Arduino IDE**
+2. Vào:
 
-1. Tải thư viện: [https://github.com/chunix64/Universal-Arduino-Zalo-Bot/archive/refs/heads/main.zip](https://github.com/chunix64/Universal-Arduino-Zalo-Bot/archive/refs/heads/main.zip)
+   ```
+   Sketch → Include Library → Manage Libraries
+   ```
+3. Tìm kiếm:
 
-2. Mở Arduino IDE
-
-3. Vào:
-
-```
-Sketch → Include Library → Add .ZIP Library...
-```
-
-4. Chọn file ZIP vừa tải về
-
-### Tùy chọn 2: Cài thủ công
-
-Clone repository hoặc giải nén file .Zip vào thư mục thư viện Arduino của bạn:
-
-```bash
-git clone https://github.com/chunix64/Universal-Arduino-Zalo-Bot.git
-```
-
-Sau đó khởi động lại Arduino IDE
+   ```
+   Universal Arduino Zalo Bot
+   ```
+4. Nhấn **Install** (Cài đặt)
 
 ## Phụ Thuộc
 
@@ -42,8 +31,14 @@ Cài đặt qua Library Manager hoặc thủ công từ GitHub.
 Để tạo bot mới, bạn cần một Access Token. Nhắn tin tới [Zalo Bot Manager](http://zalo.me/3899658094114941620) và làm theo các bước đơn giản được mô tả [tại đây](https://bot.zaloplatforms.com/docs/create-bot/).
 
 ### Khởi tạo bot
+Chế độ tiêu chuẩn:
 ```ino
 UniversalZaloBot zalo(BOT_TOKEN, client);
+```
+
+Chế độ FreeRTOS:
+```ino
+UniversalZaloBot zalo(BOT_TOKEN, client, true);
 ```
 
 Trong đó `BOT_TOKEN` là access token của Zalo bot và `client` là network client của bạn.
@@ -51,11 +46,6 @@ Trong đó `BOT_TOKEN` là access token của Zalo bot và `client` là network 
 ### Cấu hình cơ bản
 ```ino
 zalo.begin(); // tùy chọn nhưng cần thiết cho chế độ FreeRTOS
-```
-
-Chế độ FreeRTOS:
-```ino
-UniversalZaloBot zalo(BOT_TOKEN, client, true);
 ```
 
 ## Ví Dụ
