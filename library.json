@@ -1,0 +1,34 @@
+{
+  "name": "UniversalZaloBot",
+  "version": "0.1.0",
+  "description": "Arduino Zalo Bot library for multiple different architectures. A Universal Zalo Bot library for Arduino devices.",
+  "keywords": [
+    "communication",
+    "arduino",
+    "zalo",
+    "bot",
+    "freertos"
+  ],
+  "authors": [
+    {
+      "name": "chunix64",
+      "email": "141021414+chunix64@users.noreply.github.com",
+      "url": "https://github.com/chunix64",
+      "maintainer": true
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chunix64/Universal-Arduino-Zalo-Bot"
+  },
+  "homepage": "https://github.com/chunix64/Universal-Arduino-Zalo-Bot",
+  "frameworks": "*",
+  "platforms": "*",
+  "dependencies": {
+    "ArduinoJson": "*"
+  },
+  "headers": [
+    "UniversalZaloBot.h"
+  ],
+  "license": "Apache-2.0"
+}
