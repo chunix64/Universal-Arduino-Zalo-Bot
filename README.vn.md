@@ -43,11 +43,6 @@ UniversalZaloBot zalo(BOT_TOKEN, client, true);
 
 Trong đó `BOT_TOKEN` là access token của Zalo bot và `client` là network client của bạn.
 
-### Cấu hình cơ bản
-```ino
-zalo.begin(); // tùy chọn nhưng cần thiết cho chế độ FreeRTOS
-```
-
 ## Ví Dụ
 ### In tin nhắn nhận được ra console
 ```ino
@@ -76,26 +71,21 @@ void setup() {
     delay(500);
   }
 
-  zalo.begin();  // Có thể có hoặc không (optional)
-
   Serial.println("");
   Serial.print("Đã kết nối WiFi. IP nội bộ: ");
   Serial.println(WiFi.localIP());
 
   zalo.onText([](const Message& message) {
-    Serial.println("---- Tin Nhắn Mới ----");
-    Serial.print("Chat ID: ");
-    Serial.println(message.chatId);
+    String log =
+      "---- Tin Nhắn Mới ----\n"
+      "Chat ID: " + String(message.chatId) + "\n" +
+      "User ID: " + String(message.userId) + "\n" +
+      "Tên người dùng: " + String(message.userName) + "\n" +
+      "Nội dung: " + String(message.content) + "\n" +
+      "---------------------";
 
-    Serial.print("User ID: ");
-    Serial.println(message.userId);
-
-    Serial.print("Tên người dùng: ");
-    Serial.println(message.userName);
-
-    Serial.print("Nội dung: ");
-    Serial.println(message.content);
-    Serial.println("----------------------");
+    Serial.println(log);
+    zalo.sendMessage(message.userId, log);
   });
 }
 
@@ -113,7 +103,6 @@ Dưới đây là danh sách các tính năng chính mà thư viện này cung c
 
 | Tính năng               | Mô tả                                                | Cách dùng                                                                                    |
 |-------------------------|------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| _Begin_                 | Có thể có hoặc không (optional)                      | `void begin()`                                                                            |
 | _Debug_                 | Hiển thị log và dữ liệu hữu ích                      | `setDebug(bool isDebug)`                                                                     |
 | _Gửi tin nhắn_          | Bot có thể gửi tin nhắn tới bất kỳ tài khoản Zalo nào | `bool sendMessage(const String &chat_id, const String &message)`                           |
 | _Gửi ảnh_               | Bot có thể gửi ảnh tới bất kỳ tài khoản Zalo nào    | `bool sendPhoto(const String &chat_id, const String &photo_url, const String &caption = "")` |

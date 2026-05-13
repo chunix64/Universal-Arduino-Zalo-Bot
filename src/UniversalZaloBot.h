@@ -51,7 +51,6 @@ public:
                    bool isFreeRTOS = false);
   ~UniversalZaloBot();
   void setDebug(bool isDebug);
-  void begin();
   void setApiHost(const String &host);
   String getApiHost();
   void setToken(const String &token);

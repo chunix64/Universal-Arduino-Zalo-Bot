@@ -43,11 +43,6 @@ UniversalZaloBot zalo(BOT_TOKEN, client, true);
 
 where `BOT_TOKEN` is your Zalo bot access token and `client` is your network client.
 
-### Basic setup
-```ino
-zalo.begin(); // optional but needed by FreeRTOS mode
-```
-
 ## Example
 ### Print received messages to console
 ```ino
@@ -76,26 +71,21 @@ void setup() {
     delay(500);
   }
 
-  zalo.begin();  // optional
-
   Serial.println("");
   Serial.print("Connected to Wifi. Local IP: ");
   Serial.println(WiFi.localIP());
 
   zalo.onText([](const Message& message) {
-    Serial.println("---- New Message ----");
-    Serial.print("Chat ID: ");
-    Serial.println(message.chatId);
+    String log =
+      "---- New Message ----\n"
+      "Chat ID: " + String(message.chatId) + "\n" +
+      "User ID: " + String(message.userId) + "\n" +
+      "User Name: " + String(message.userName) + "\n" +
+      "Content: " + String(message.content) + "\n" +
+      "---------------------";
 
-    Serial.print("User ID: ");
-    Serial.println(message.userId);
-
-    Serial.print("User Name: ");
-    Serial.println(message.userName);
-
-    Serial.print("Content: ");
-    Serial.println(message.content);
-    Serial.println("---------------------");
+    Serial.println(log);
+    zalo.sendMessage(message.userId, log);
   });
 }
 
@@ -113,7 +103,6 @@ Here is a list of the main features that this library covers.
 
 | Features                | Description                                          | Usage                                                                                        |
 |-------------------------|------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| _Begin_                 | Optional                                             | `void begin()`                                                                               |
 | _Debug_                 | Show logs and useful data                            | `setDebug(bool isDebug)`                                                                     |
 | _Sending messages_      | Your bot can send messages to any Zalo account       | `bool sendMessage(const String &chat_id, const String &message)`                             |
 | _Sending photos_        | Your bot can send photos to any Zalo account         | `bool sendPhoto(const String &chat_id, const String &photo_url, const String &caption = "")` |

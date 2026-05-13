@@ -77,8 +77,6 @@ void setup() {
 
   client.setInsecure();  // skip certificate validation
 
-  zalo.begin();
-
   /* -------------------------
      Create Zalo Task (Core 0)
      Network-sensitive task

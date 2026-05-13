@@ -1,6 +1,6 @@
 {
   "name": "UniversalZaloBot",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Arduino Zalo Bot library for multiple different architectures. A Universal Zalo Bot library for Arduino devices.",
   "keywords": [
     "communication",

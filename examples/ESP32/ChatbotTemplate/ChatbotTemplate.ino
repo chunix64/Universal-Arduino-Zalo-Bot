@@ -83,9 +83,6 @@ void setupZaloBot() {
   zaloReceiver.onCommand("/list", handleList);
   zaloReceiver.onCommand("/get_system_info", handleGetSystemInfo);
   zaloReceiver.onCommand("/tell", handleTell);
-
-  zaloReceiver.begin();
-  zaloSender.begin();
 }
 
 void createTasks() {

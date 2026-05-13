@@ -39,14 +39,6 @@ UniversalZaloBot::~UniversalZaloBot() {
 
 void UniversalZaloBot::setDebug(bool isDebug) { _isDebug = isDebug; }
 
-void UniversalZaloBot::begin() {
-#ifndef HAS_FREERTOS
-  if (_isFreeRTOS && _isDebug) {
-    Serial.println("Your board does not support FreeRTOS");
-  }
-#endif // !HAS_FREERTOS
-}
-
 void UniversalZaloBot::setApiHost(const String &host) { _apiHost = host; }
 
 String UniversalZaloBot::getApiHost() { return _apiHost; }

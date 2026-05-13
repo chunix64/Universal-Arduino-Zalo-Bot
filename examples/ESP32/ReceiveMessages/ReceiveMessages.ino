@@ -25,8 +25,6 @@ void setup() {
     delay(500);
   }
 
-  zalo.begin();
-
   Serial.println("");
   Serial.println(WiFi.localIP());
 
